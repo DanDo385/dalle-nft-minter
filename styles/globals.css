@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+html, body {
+  @apply text-green-400; 
+  font-family: 'Poppins', sans-serif;
+  background-color: black; 
+
+/* Example custom class using TailwindCSS and Poppins */
+.custom-class {
+  @apply text-lg p-4;
+  font-family: 'Poppins', sans-serif;
+}
