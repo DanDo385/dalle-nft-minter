@@ -1,3 +1,4 @@
+// pages/images.js
 import { useState } from 'react';
 
 export default function GenerateImage() {
