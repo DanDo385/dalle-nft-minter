@@ -1,8 +1,12 @@
 // pages/api/image.js
-import formidable from 'formidable';
+import { IncomingForm } from 'formidable';
 import fs from 'fs';
+import { config } from 'dotenv';
 
-export const config = {
+// Load environment variables
+config();
+
+export const apiConfig = {
   api: {
     bodyParser: false,
   },
@@ -10,7 +14,7 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const form = new formidable.IncomingForm();
+    const form = new IncomingForm();
 
     form.parse(req, async (err, fields, files) => {
       if (err) {
@@ -18,44 +22,44 @@ export default async function handler(req, res) {
         return res.status(500).json({ success: false, message: 'Error parsing form data.' });
       }
 
-      // Assuming 'prompt' is a text field and the image file will be handled here
       const prompt = fields.prompt;
-      let image;
+
+      // Assuming you're still handling an image upload as before
+      let imageData;
       if (files.image) {
-        // Example of how you might handle the file, such as reading it into memory
-        image = fs.readFileSync(files.image.filepath);
-        // Here you would typically upload the image to your API or include it in your API request
+        imageData = fs.readFileSync(files.image.filepath);
       }
 
+      // Use the DALL-E API key from the environment variables
+      const apiKey = process.env.DALLE_API_KEY;
+
       try {
-        const apiKey = process.env.DALLE_API_KEY; // Access the API key from environment variables
-        const apiResponse = await fetch("DALL-E API URL", {
-          method: "POST",
-          headers: { 
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
+        const response = await fetch('https://api.dalle.service.com/generate', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            prompt, // Include other necessary data based on your API's requirements
-            // For file handling, refer to your API's documentation as you may need to encode the file or use a different content type
-          })
+            prompt: prompt,
+            // Include image data as needed
+          }),
         });
 
-        if (!apiResponse.ok) {
-          throw new Error('Failed to fetch from the DALL-E API');
+        if (!response.ok) {
+          throw new Error(`Failed to generate image: ${response.statusText}`);
         }
 
-        const data = await apiResponse.json();
+        const data = await response.json();
 
-        // Respond with the data from the DALL-E API
-        res.status(200).json(data);
+        res.status(200).json({ imageUrl: data.imageUrl });
       } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Failed to generate image.' });
+        console.error('API call failed:', error);
+        res.status(500).json({ success: false, message: 'Failed to call DALL-E API.' });
       }
     });
   } else {
     res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    res.status(405).end('Method Not Allowed');
   }
 }

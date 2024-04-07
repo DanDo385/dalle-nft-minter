@@ -1,5 +1,6 @@
 // components/GenerateImage.jsx
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function GenerateImage() {
   const [prompt, setPrompt] = useState('');
@@ -14,7 +15,7 @@ export default function GenerateImage() {
       formData.append('image', image);
     }
 
-    const response = await fetch('/api/generate-image', {
+    const response = await fetch('/api/image', {
       method: 'POST',
       body: formData,
     });
@@ -54,11 +55,11 @@ export default function GenerateImage() {
         >Generate Image</button>
       </form>
       
-      {generatedImage && (
-          <div>
-              <img src={generatedImage} alt="Generated" />
-          </div>
-      )}
+    {generatedImage && (
+        <div>
+            <Image src={generatedImage} alt="Generated" />
+        </div>
+    )}
     </div>
   );
 }
