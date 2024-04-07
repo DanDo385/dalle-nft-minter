@@ -1,3 +1,4 @@
+// components/GenerateImage.jsx
 import { useState } from 'react';
 
 export default function GenerateImage() {
@@ -24,18 +25,40 @@ export default function GenerateImage() {
 
   return (
     <div>
-        {/* Form content remains the same */}
+      <h2>Generate an Image with DALL-E</h2>
+      <p>Enter a text prompt and/or upload an image to generate a new image.</p>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="prompt">Text Prompt:</label>
+          <input
+            id="prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            type="text"
+            placeholder="Enter a prompt"
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="imageUpload">Upload Image:</label>
+          <input
+            id="imageUpload"
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
+        </div>
         
         <button
             type="submit"
             className="bg-green-400 text-black p-2 rounded"
         >Generate Image</button>
-        
-        {generatedImage && (
-            <div>
-                <Image src={generatedImage} alt="Generated" />
-            </div>
-        )}
+      </form>
+      
+      {generatedImage && (
+          <div>
+              <img src={generatedImage} alt="Generated" />
+          </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 // pages/images.js
-import GenerateImage from '../path/to/GenerateImage';
+import GenerateImage from '@/components/GenerateImage';
 
 export default function ImagesPage() {
   return (
