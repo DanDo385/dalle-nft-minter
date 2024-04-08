@@ -1,66 +1,37 @@
-import { IncomingForm } from 'formidable';
-import fs from 'fs';
-import path from 'path';
+// pages/api/images.js
+import { NextApiRequest, NextApiResponse } from 'next';
+import OpenAI from 'openai';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+const openai = new OpenAI({
+    apiKey: process.env.DALLE_API_KEY,
+});
 
-export default function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const form = new IncomingForm();
+    try {
+      // Extract the prompt from the request body
+      const { prompt } = req.body;
+      
+      // Make the API call to OpenAI's DALL·E to generate an image
+      const response = await openai.createImage({
+        model: "dall-e-3", // Use "dall-e-2" for DALL·E 2 operations
+        prompt: prompt,
+        size: "1024x1024",
+        quality: "standard", // Set to "hd" for high definition
+        n: 1, // Number of images to generate
+      });
 
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ success: false, message: 'Error parsing form data.' });
-      }
+      // Extract the URL of the generated image from the response
+      const imageUrl = response.data[0].url;
 
-      const prompt = fields.prompt;
-
-      let imageBase64 = '';
-      if (files.image) {
-        // Assuming the 'image' field is used for the file upload
-        const imagePath = files.image.filepath;
-        const imageBuffer = fs.readFileSync(imagePath);
-        imageBase64 = imageBuffer.toString('base64');
-
-        // Depending on the API, you might also need MIME type information
-        const mimeType = path.extname(files.image.originalFilename).replace('.', '');
-        imageBase64 = `data:image/${mimeType};base64,${imageBase64}`;
-      }
-
-      // Use environment variable for the API key
-      const apiKey = process.env.DALLE_API_KEY;
-
-      try {
-        // Replace 'YOUR_DALLE_API_ENDPOINT' with the actual endpoint URL
-        const response = await fetch('YOUR_DALLE_API_ENDPOINT', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: prompt,
-            image: imageBase64, // Assuming the API accepts a base64-encoded image string
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        res.status(200).json(data);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'API call failed.' });
-      }
-    });
+      // Send the image URL back in the response
+      res.status(200).json({ imageUrl });
+    } catch (error) {
+      console.error('Error generating image:', error);
+      res.status(500).json({ message: 'Failed to generate image' });
+    }
   } else {
+    // Handle non-POST requests
     res.setHeader('Allow', ['POST']);
     res.status(405).end('Method Not Allowed');
   }
