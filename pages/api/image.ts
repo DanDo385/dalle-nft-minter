@@ -4,7 +4,6 @@ import fetch from 'node-fetch';
 
 const OPENAI_API_KEY = process.env.DALLE_API_KEY;
 const OPENAI_GENERATIONS_ENDPOINT = 'https://api.openai.com/v1/images/generations';
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).end('Method Not Allowed');

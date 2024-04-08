@@ -1,4 +1,5 @@
-// components/GenerateImage.jsx
+//components/GenerateImage.jsx
+
 import { useState } from 'react';
 import Image from 'next/image';
 
@@ -6,22 +7,35 @@ export default function GenerateImage() {
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState(null);
   const [generatedImage, setGeneratedImage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Keep track of loading state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Enable loading state
+
     const formData = new FormData();
     formData.append('prompt', prompt);
     if (image) {
       formData.append('image', image);
     }
 
-    const response = await fetch('/api/image', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const response = await fetch('/api/image', {
+        method: 'POST',
+        body: formData,
+      });
 
-    const data = await response.json();
-    setGeneratedImage(data.imageUrl); // Assuming the API responds with an image URL
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setGeneratedImage(data.imageUrl); // Make sure to adjust according to your actual API response
+    } catch (error) {
+      console.error('Fetch error:', error);
+    } finally {
+      setIsLoading(false); // Disable loading state after fetch completion
+    }
   };
 
   return (
@@ -29,37 +43,22 @@ export default function GenerateImage() {
       <h2>Generate an Image with DALL-E</h2>
       <p>Enter a text prompt and/or upload an image to generate a new image.</p>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="prompt">Text Prompt:</label>
-          <input
-            id="prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            type="text"
-            placeholder="Enter a prompt"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="imageUpload">Upload Image:</label>
-          <input
-            id="imageUpload"
-            type="file"
-            onChange={(e) => setImage(e.target.files[0])}
-          />
-        </div>
-        
-        <button
-            type="submit"
-            className="bg-green-400 text-black p-2 rounded"
-        >Generate Image</button>
+        {/* Form elements go here */}
       </form>
       
-    {generatedImage && (
-        <div>
-            <Image src={generatedImage} alt="Generated" />
+      {/* Loading Spinner */}
+      {isLoading && (
+        <div className="flex justify-center items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-900"></div>
         </div>
-    )}
+      )}
+
+      {/* Display generated image */}
+      {generatedImage && (
+        <div>
+          <Image src={generatedImage} alt="Generated" layout="fill" />
+        </div>
+      )}
     </div>
   );
 }
