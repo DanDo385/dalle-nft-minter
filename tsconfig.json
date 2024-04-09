@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js"
-, "server.js"  ],
+, "server.js", "postcss.config.cjs"  ],
   "exclude": [
     "node_modules"
   ]
