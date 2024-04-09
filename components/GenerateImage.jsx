@@ -4,23 +4,20 @@ import Image from 'next/image';
 
 export default function GenerateImage() {
   const [prompt, setPrompt] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // State to manage loading
+  const [isLoading, setIsLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
     try {
-      const response = await fetch('/api/image', {
+      const response = await fetch('/api/generate-image', { // Ensure this matches your Express route
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          prompt,
-          // Include any other fields as necessary
-        }),
+        body: JSON.stringify({ prompt }),
       });
 
       if (!response.ok) {
@@ -28,11 +25,11 @@ export default function GenerateImage() {
       }
 
       const data = await response.json();
-      setGeneratedImage(data.data[0]?.url); // Ensure you are accessing the URL correctly based on your API response
+      setGeneratedImage(data[0]?.url); // Adjust according to the actual response structure
     } catch (error) {
       console.error('Fetch error:', error.message);
     } finally {
-      setIsLoading(false); // Stop loading regardless of success or failure
+      setIsLoading(false);
     }
   };
 
