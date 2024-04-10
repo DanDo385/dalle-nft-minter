@@ -14,7 +14,7 @@ const MetaMaskButton = () => {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         console.log('Connected with account:', accounts[0]);
         // Redirect to the image page after successful connection
-        router.push('/image');
+        router.push('/images');
       } else {
         setError('MetaMask is not installed. Please install it to use this app.');
       }

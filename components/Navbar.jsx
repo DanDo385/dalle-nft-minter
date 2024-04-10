@@ -20,8 +20,8 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/image">
-                <span>Image</span>
+              <Link href="/images">
+                <span>Images</span>
               </Link>
             </li>
             <li>

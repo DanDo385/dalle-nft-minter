@@ -4,7 +4,7 @@ import GenerateImage from '../../components/GenerateImage';
 export default function ImagePage() {
   return (
     <div>
-      <h1>Generate an Image</h1>
+      <h1>Enter Prompt Below</h1>
       <GenerateImage />
     </div>
   );
