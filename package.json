@@ -1,13 +1,15 @@
 {
   "name": "dalle-nft-minter",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile": "node scripts/compile.js",
+    "deploy": "node scripts/deploy.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
