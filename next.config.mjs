@@ -1,7 +1,10 @@
+// next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
-  };
-  
-  export default nextConfig;
-  
+  reactStrictMode: true,
+  images: {
+    domains: ['oaidalleapiprodscus.blob.core.windows.net'],
+  },
+};
+
+export default nextConfig;
