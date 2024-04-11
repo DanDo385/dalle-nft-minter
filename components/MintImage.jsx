@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 
-const contractABI = require('../path/to/your/contractABI.json');
-const contractAddress = 'YOUR_CONTRACT_ADDRESS_HERE';
+// Adjust these paths to correctly point to where your ABI and deployed address JSON files are located.
+const contractABI = require('../build/ImageMinterABI.json');
+const contractAddressData = require('../build/DeployedAddress.json');
+const contractAddress = contractAddressData.address; // Assuming the JSON structure is { "address": "YOUR_DEPLOYED_CONTRACT_ADDRESS" }
 
 const MintImage = ({ imageUrl }) => {
   const [isMinting, setIsMinting] = useState(false);
@@ -16,7 +18,7 @@ const MintImage = ({ imageUrl }) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send('eth_requestAccounts', []);
       const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+      const contract = new ethers.Contract(contractAddress, contractABI.abi, signer); // Make sure to use contractABI.abi if your ABI file exports an object with an abi key
 
       const transaction = await contract.mintImage(imageUrl);
       await transaction.wait();
