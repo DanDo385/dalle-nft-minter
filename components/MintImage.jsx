@@ -1,4 +1,5 @@
 // components/MintImage.jsx
+
 import { useState } from 'react';
 import { ethers } from 'ethers';
 
@@ -8,7 +9,8 @@ const contractAddressData = require('../build/DeployedAddress.json');
 const contractAddress = contractAddressData.address;
 
 // The detected chain ID for the network MetaMask is connected to
-const DETECTED_CHAIN_ID = '0xAAF0B7'; // Update this to match the actual chain ID from MetaMask
+// Using the hexadecimal string format
+const DETECTED_CHAIN_ID = '0xAAF0B7'; // Ensure this is a string
 
 const MintImage = ({ imageUrl }) => {
   const [isMinting, setIsMinting] = useState(false);
@@ -28,10 +30,12 @@ const MintImage = ({ imageUrl }) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
       // Check network compatibility
-      const { chainId } = await provider.getNetwork();
-      console.log(`Detected network chainId: ${chainId}`);
-      if (chainId !== DETECTED_CHAIN_ID) {
-        setErrorMessage('You are on the wrong network. Please switch to the network with chain ID 0xAAF0B7.');
+      const network = await provider.getNetwork();
+      const chainIdHex = `0x${network.chainId.toString(16)}`; // Convert to hexadecimal format
+
+      console.log(`Detected network chainId: ${chainIdHex}`);
+      if (chainIdHex !== DETECTED_CHAIN_ID) {
+        setErrorMessage(`You are on the wrong network. Please switch to the network with chain ID ${DETECTED_CHAIN_ID}.`);
         setIsMinting(false);
         return;
       }
