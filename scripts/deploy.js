@@ -5,7 +5,7 @@ const path = require('path');
 // Adjust the require path for the compiled contract
 const contract = require('../compile');
 
-const privateKey = 'YOUR_PRIVATE_KEY'; // Use environment variables for safety
+const privateKey = 'PRIVATE_KEY'; // Use environment variables for safety
 const provider = new ethers.providers.InfuraProvider('sepolia', 'INFURA_PROJECT_ID');
 const wallet = new ethers.Wallet(privateKey, provider);
 
