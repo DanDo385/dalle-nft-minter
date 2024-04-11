@@ -5,10 +5,10 @@ import { ethers } from 'ethers';
 // Adjust these paths to correctly point to where your ABI and deployed address JSON files are located.
 const contractABI = require('../build/ImageMinterABI.json');
 const contractAddressData = require('../build/DeployedAddress.json');
-const contractAddress = contractAddressData.address; // Assuming the JSON structure is { "address": "YOUR_DEPLOYED_CONTRACT_ADDRESS" }
+const contractAddress = contractAddressData.address;
 
-// The chain ID for Sepolia Testnet
-const YOUR_EXPECTED_CHAIN_ID = '0x7A'; // Sepolia Testnet
+// The detected chain ID for the network MetaMask is connected to
+const DETECTED_CHAIN_ID = '0xAAF0B7'; // Update this to match the actual chain ID from MetaMask
 
 const MintImage = ({ imageUrl }) => {
   const [isMinting, setIsMinting] = useState(false);
@@ -29,8 +29,9 @@ const MintImage = ({ imageUrl }) => {
 
       // Check network compatibility
       const { chainId } = await provider.getNetwork();
-      if (chainId !== YOUR_EXPECTED_CHAIN_ID) {
-        setErrorMessage('You are on the wrong network. Please switch to the Sepolia test network.');
+      console.log(`Detected network chainId: ${chainId}`);
+      if (chainId !== DETECTED_CHAIN_ID) {
+        setErrorMessage('You are on the wrong network. Please switch to the network with chain ID 0xAAF0B7.');
         setIsMinting(false);
         return;
       }
