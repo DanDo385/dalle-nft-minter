@@ -3,12 +3,31 @@ import { useState } from 'react';
 
 export default function GenerateImage({ onImageGenerated }) {
   const [prompt, setPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerateImage = async () => {
-    // Simulate generating an image URL based on the prompt
-    const imageUrl = `https://example.com/generated-image?prompt=${encodeURIComponent(prompt)}`;
-    // Call the callback with the generated image URL
-    onImageGenerated(imageUrl);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/images', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setIsLoading(false);
+      onImageGenerated(data.url); // This should trigger any parent component handling for the generated image URL.
+    } catch (error) {
+      console.error('Failed to generate image:', error);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -22,9 +41,14 @@ export default function GenerateImage({ onImageGenerated }) {
           placeholder="Enter a prompt"
         />
       </div>
-      <button onClick={handleGenerateImage} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Generate Image
+      <button 
+        onClick={handleGenerateImage} 
+        disabled={isLoading} 
+        className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded"
+      >
+        {isLoading ? 'Generating...' : 'Generate Image'}
       </button>
     </div>
   );
 }
+
