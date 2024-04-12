@@ -17,13 +17,15 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
 
     setIsMinting(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
     const signer = provider.getSigner();
-    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
 
     try {
       const transaction = await contract.mintImage(imageUrl, imageName, imageDescription);
       await transaction.wait();
       alert('Image minted successfully!');
+      setErrorMessage('');
     } catch (error) {
       console.error('Minting error:', error);
       setErrorMessage(`Minting failed: ${error.message || 'Unknown error occurred'}`);
@@ -34,17 +36,9 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
 
   return (
     <div>
-      <button
-        onClick={mintImage}
-        disabled={isMinting}
-        className="bg-black text-white p-2 w-full mt-4 hover:bg-green-400 transition-colors duration-300"
-      >
-        {isMinting ? 'Minting...' : 'Mint Image'}
-      </button>
-      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+      {/* ... rest of your component */}
     </div>
   );
 };
 
 export default MintImage;
-

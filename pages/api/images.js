@@ -14,14 +14,20 @@ export default async function handler(req, res) {
         response_format: 'url',
       });
 
-      const imageUrl = imageResponse.data[0].url; // Assuming the response format provides a direct URL
-      res.status(200).json({ url: imageUrl });
+      // Simulated image conversion to JPG
+      const imageUrl = imageResponse.data[0].url.replace(/\.png|\.webp/, '.jpg');
+      const metadata = {
+        name: `Art for: ${prompt}`,
+        description: `Generated art based on the prompt: ${prompt}`,
+        image: imageUrl
+      };
+
+      res.status(200).json({ metadata });
     } catch (error) {
       console.error('Error generating image:', error);
       res.status(500).json({ error: 'Failed to generate image' });
     }
   } else {
-    // Handle any other HTTP methods
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
