@@ -1,6 +1,5 @@
-//components/MintImage.jsx
-
-import React, { useState } from 'react';
+// components/MintImage.jsx
+import { useState } from 'react';
 import { ethers } from 'ethers';
 
 const contractABI = require('../build/ImageMinterABI.json');
@@ -16,6 +15,9 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
       return;
     }
 
+    // Ensure the image URL ends with .png for consistency in NFTs.
+    const pngImageUrl = imageUrl.endsWith('.png') ? imageUrl : imageUrl.replace(/(\.\w+)$/, '.png');
+
     setIsMinting(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts', []);
@@ -23,7 +25,7 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
     const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
 
     try {
-      const transaction = await contract.mintImage(imageUrl, imageName, imageDescription);
+      const transaction = await contract.mintImage(pngImageUrl, imageName, imageDescription);
       await transaction.wait();
       alert('Image minted successfully!');
     } catch (error) {
@@ -41,11 +43,4 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
         disabled={isMinting || !imageUrl || !imageName || !imageDescription}
         className="bg-black text-white p-2 w-full mt-4 hover:bg-green-400 transition-colors duration-300"
       >
-        {isMinting ? 'Minting...' : 'Mint Image'}
-      </button>
-      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-    </div>
-  );
-};
-
-export default MintImage;
+        {isMinting ? 'Mint

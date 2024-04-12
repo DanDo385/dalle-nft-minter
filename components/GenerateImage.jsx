@@ -19,16 +19,14 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      
       const data = await response.json();
-      const imageUrl = data.metadata.image;
-      onImageGenerated(imageUrl); // Pass the image URL to the callback
-      onDetailsProvided(imageUrl, name, data.metadata.description); // Pass the name and description to the callback
+      onImageGenerated(data.metadata.image); // Call the callback with the image URL
+      onDetailsProvided(data.metadata.image, name, data.metadata.description); // Provide additional details
     } catch (error) {
       console.error('Failed to generate image:', error);
-      alert('Failed to generate image. Please try again.');
+      alert(`Failed to generate image: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
