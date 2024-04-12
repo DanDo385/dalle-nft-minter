@@ -17,20 +17,27 @@ const DisplayNFTs = ({ publicKey }) => {
         setLoading(true);
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const contract = new ethers.Contract(contractAddress, contractABI, provider);
-
+  
         try {
-          // Use the ImageMinted event emitted by the contract to get NFTs
           const filter = contract.filters.ImageMinted(null, null, null);
           const events = await contract.queryFilter(filter);
-
+          console.log("Fetched events:", events); // Debug log
+  
           const nfts = await Promise.all(events.map(async (event) => {
-            const tokenURI = event.args.tokenURI;
-            const response = await fetch(tokenURI);
-            const metadata = await response.json();
-            return metadata.image;
+            try {
+              const tokenURI = event.args.tokenURI;
+              console.log("Fetching metadata from URI:", tokenURI); // Debug log
+              const response = await fetch(tokenURI);
+              const metadata = await response.json();
+              return metadata.image;
+            } catch (error) {
+              console.error("Failed to fetch metadata for tokenURI:", event.args.tokenURI, error);
+              return null; // Return null or a default image if the fetch fails
+            }
           }));
-
-          setNftData(nfts);
+  
+          console.log("NFT Data:", nfts); // Debug log
+          setNftData(nfts.filter(image => image !== null)); // Filter out null results
         } catch (error) {
           console.error("Error fetching NFTs: ", error);
           setNftData([]); // Clear data on error
@@ -39,9 +46,9 @@ const DisplayNFTs = ({ publicKey }) => {
         }
       }
     };
-
+  
     fetchNFTs();
-  }, [publicKey]);
+  }, [publicKey, contractABI, contractAddress]);
 
   return (
     <div style={{ background: 'black', padding: '10px' }}>

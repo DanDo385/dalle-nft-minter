@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-// contracts/ImageMinter.sol
 pragma solidity ^0.8.25;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -10,17 +9,19 @@ contract ImageMinter is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    event ImageMinted(address minter, uint256 tokenId, string tokenURI);
+    // Enhanced event to include more metadata
+    event ImageMinted(address indexed minter, uint256 indexed tokenId, string tokenURI, string name, string description);
 
     constructor() ERC721("ImageMinter", "IMT") {}
 
-    function mintImage(string memory tokenURI) public returns (uint256) {
+    function mintImage(string memory tokenURI, string memory name, string memory description) public returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
 
-        emit ImageMinted(msg.sender, newItemId, tokenURI);
+        // Emitting additional data
+        emit ImageMinted(msg.sender, newItemId, tokenURI, name, description);
 
         return newItemId;
     }
