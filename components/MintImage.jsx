@@ -1,5 +1,6 @@
-// components/MintImage.jsx
-import { useState } from 'react';
+//components/MintImage.jsx
+
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 
 const contractABI = require('../build/ImageMinterABI.json');
@@ -25,7 +26,6 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
       const transaction = await contract.mintImage(imageUrl, imageName, imageDescription);
       await transaction.wait();
       alert('Image minted successfully!');
-      setErrorMessage('');
     } catch (error) {
       console.error('Minting error:', error);
       setErrorMessage(`Minting failed: ${error.message || 'Unknown error occurred'}`);
@@ -36,7 +36,14 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
 
   return (
     <div>
-      {/* ... rest of your component */}
+      <button
+        onClick={mintImage}
+        disabled={isMinting || !imageUrl || !imageName || !imageDescription}
+        className="bg-black text-white p-2 w-full mt-4 hover:bg-green-400 transition-colors duration-300"
+      >
+        {isMinting ? 'Minting...' : 'Mint Image'}
+      </button>
+      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
     </div>
   );
 };
