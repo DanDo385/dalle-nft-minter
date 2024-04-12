@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 
-// Make sure the path to your ABI and address is correct.
 const contractABI = require('../build/ImageMinterABI.json');
 const contractAddress = require('../build/DeployedAddress.json').address;
 
@@ -10,9 +9,6 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const mintImage = async () => {
-    setErrorMessage('');
-
-    // Validate input fields
     if (!imageUrl || !imageName || !imageDescription) {
       setErrorMessage('All fields must be filled out.');
       return;
@@ -24,11 +20,9 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
     const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
     try {
-      // Execute the minting transaction
       const transaction = await contract.mintImage(imageUrl, imageName, imageDescription);
       await transaction.wait();
       alert('Image minted successfully!');
-      setErrorMessage(''); // Clear any error messages after successful minting
     } catch (error) {
       console.error('Minting error:', error);
       setErrorMessage(`Minting failed: ${error.message || 'Unknown error occurred'}`);
@@ -38,18 +32,16 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
   };
 
   return (
-    <>
-      <div>
-        <button
-          onClick={mintImage}
-          disabled={isMinting}
-          className="bg-black text-white p-2 w-full mt-4 hover:bg-green-400 transition-colors duration-300"
-        >
-          {isMinting ? 'Minting...' : 'Mint Image'}
-        </button>
-        {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-      </div>
-    </>
+    <div>
+      <button
+        onClick={mintImage}
+        disabled={isMinting}
+        className="bg-black text-white p-2 w-full mt-4 hover:bg-green-400 transition-colors duration-300"
+      >
+        {isMinting ? 'Minting...' : 'Mint Image'}
+      </button>
+      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+    </div>
   );
 };
 
