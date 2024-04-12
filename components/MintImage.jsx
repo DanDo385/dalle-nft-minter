@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 
-// Ensure paths are correct and files are loaded properly.
+// Make sure the path to your ABI and address is correct.
 const contractABI = require('../build/ImageMinterABI.json');
 const contractAddress = require('../build/DeployedAddress.json').address;
 
@@ -12,26 +12,25 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
   const mintImage = async () => {
     setErrorMessage('');
 
-    if (!window.ethereum) {
-      setErrorMessage('MetaMask is not installed. Please install MetaMask to use this feature.');
+    // Validate input fields
+    if (!imageUrl || !imageName || !imageDescription) {
+      setErrorMessage('All fields must be filled out.');
       return;
     }
 
     setIsMinting(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
     try {
-      await provider.send('eth_requestAccounts', []);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
+      // Execute the minting transaction
       const transaction = await contract.mintImage(imageUrl, imageName, imageDescription);
       await transaction.wait();
-
       alert('Image minted successfully!');
+      setErrorMessage(''); // Clear any error messages after successful minting
     } catch (error) {
       console.error('Minting error:', error);
-      // Improved error handling to check if error.message is defined
       setErrorMessage(`Minting failed: ${error.message || 'Unknown error occurred'}`);
     } finally {
       setIsMinting(false);
