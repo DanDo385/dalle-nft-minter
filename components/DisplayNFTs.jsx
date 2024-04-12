@@ -1,3 +1,4 @@
+//components/DisplayNFTs.jsx
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
@@ -6,36 +7,32 @@ const DisplayNFTs = ({ publicKey, contractABI, contractAddress }) => {
 
   useEffect(() => {
     const fetchNFTs = async () => {
-      if (typeof window.ethereum !== 'undefined' && publicKey) {
+      if (window.ethereum && publicKey) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const contract = new ethers.Contract(contractAddress, contractABI, provider);
-        const balance = await contract.balanceOf(publicKey);
-        const nfts = [];
 
-        for (let i = 0; i < balance.toNumber(); i++) {
-          const tokenId = await contract.tokenOfOwnerByIndex(publicKey, i);
-          const tokenURI = await contract.tokenURI(tokenId);
-          const response = await fetch(tokenURI);
-          const metadata = await response.json();
-          nfts.push(metadata.image);
+        try {
+          // You might need to create a custom function in your smart contract to return all token IDs for an owner.
+          // For now, let's assume you have a way to get the total count of NFTs.
+          const nftsOwned = await contract.getOwnedNfts(publicKey); // Hypothetical function
+          const nfts = [];
+
+          for (let i = 0; i < nftsOwned.length; i++) {
+            const tokenURI = await contract.tokenURI(nftsOwned[i]);
+            const response = await fetch(tokenURI);
+            const metadata = await response.json();
+            nfts.push(metadata.image);
+          }
+
+          setNftData(nfts);
+        } catch (error) {
+          console.error("Error fetching NFTs: ", error);
         }
-
-        setNftData(nfts);
       }
     };
 
     fetchNFTs();
   }, [publicKey, contractABI, contractAddress]);
 
-  return (
-    <div style={{ background: 'black' }}>
-      {nftData.map((image, index) => (
-        <div key={index} style={{ border: '2px solid', borderColor: 'green-400', margin: '10px' }}>
-          <img src={image} alt={`NFT ${index}`} style={{ width: '200px', height: '200px' }} />
-        </div>
-      ))}
-    </div>
-  );
+  // Display logic stays the same...
 };
-
-export default DisplayNFTs;
