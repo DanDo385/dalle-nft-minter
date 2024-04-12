@@ -22,9 +22,7 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-      // Updated to extract image URL from the metadata object
       const data = await response.json();
-      console.log('Image response data:', data); // For debugging
       const imageUrl = data.metadata.image;
       onImageGenerated(imageUrl); // Pass the image URL to the callback
       onDetailsProvided(imageUrl, name, data.metadata.description); // Pass the name and description to the callback
@@ -59,7 +57,7 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
       <button
         onClick={handleGenerateImage}
         disabled={isLoading || !prompt.trim() || !name.trim()}
-        className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded"
+        className="bg-green-400 hover:bg-green-500 text-white font-bold py-2 px-4 rounded"
       >
         {isLoading ? 'Generating...' : 'Generate Image'}
       </button>
