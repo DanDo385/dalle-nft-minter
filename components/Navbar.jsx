@@ -25,8 +25,8 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/collection">
-                <span>Collection</span>
+              <Link href="/nftattributes">
+                <span>NFT Attributes</span>
               </Link>
             </li>
           </ul>

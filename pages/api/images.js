@@ -14,8 +14,7 @@ export default async function handler(req, res) {
         response_format: 'url',
       });
 
-      // Simulated image conversion to JPG
-      const imageUrl = imageResponse.data[0].url.replace(/\.png|\.webp/, '.jpg');
+      const imageUrl = imageResponse.data[0].url;
       const metadata = {
         name: `Art for: ${prompt}`,
         description: `Generated art based on the prompt: ${prompt}`,
