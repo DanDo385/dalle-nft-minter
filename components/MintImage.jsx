@@ -1,8 +1,7 @@
-// components/MintImage.jsx
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 
-// Adjust these paths to correctly point to where your ABI and deployed address JSON files are located.
+// Ensure paths are correct and files are loaded properly.
 const contractABI = require('../build/ImageMinterABI.json');
 const contractAddress = require('../build/DeployedAddress.json').address;
 
@@ -30,10 +29,11 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
       await transaction.wait();
 
       alert('Image minted successfully!');
-      setIsMinting(false);
     } catch (error) {
       console.error('Minting error:', error);
-      setErrorMessage(`Minting failed: ${error.message}`);
+      // Improved error handling to check if error.message is defined
+      setErrorMessage(`Minting failed: ${error.message || 'Unknown error occurred'}`);
+    } finally {
       setIsMinting(false);
     }
   };
@@ -55,6 +55,3 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
 };
 
 export default MintImage;
-
-
-
