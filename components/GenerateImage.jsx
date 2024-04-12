@@ -1,3 +1,4 @@
+// components/GenerateImage.jsx
 import { useState } from 'react';
 
 export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {

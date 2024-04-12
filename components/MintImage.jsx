@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// components/MintImage.jsx
+import { useState } from 'react';
 import { ethers } from 'ethers';
 
 const contractABI = require('../build/ImageMinterABI.json');
