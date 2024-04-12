@@ -46,3 +46,4 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
 };
 
 export default MintImage;
+

@@ -54,7 +54,7 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
             />
             <button
               onClick={handleDetailsSubmission}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-green-400 hover:bg-green-400 text-black font-bold py-2 px-4 rounded"
             >
               Submit Details
             </button>
