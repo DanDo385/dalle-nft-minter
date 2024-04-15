@@ -1,14 +1,25 @@
 // components/MintImage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-
-// Import the ABI directly. Assuming the default export is the ABI array.
 import contractABI from '../build/ImageMinterABI.json';
+
 const contractAddress = require('../build/DeployedAddress.json').address;
 
 const MintImage = ({ imageUrl, imageName, imageDescription }) => {
   const [isMinting, setIsMinting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [mintedNft, setMintedNft] = useState(null);
+
+  // Function to set up an event listener for the ImageMinted event
+  const listenForMintEvent = (contract, signerAddress) => {
+    contract.on('ImageMinted', (minter, tokenId, tokenURI, name, description) => {
+      if (minter.toLowerCase() === signerAddress.toLowerCase()) {
+        setMintedNft({ tokenURI, name, description });
+        alert('Image minted successfully!');
+        setIsMinting(false);
+      }
+    });
+  };
 
   const mintImage = async () => {
     if (!imageUrl || !imageName || !imageDescription) {
@@ -21,20 +32,31 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send('eth_requestAccounts', []);
       const signer = provider.getSigner();
-      // Use the imported ABI directly without the .abi property.
+      const signerAddress = await signer.getAddress();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      const transaction = await contract.mintImage(imageUrl, imageName, imageDescription);
-      await transaction.wait();
-      alert('Image minted successfully!');
-      setErrorMessage(''); // Clear error message on success
+      // Set up the event listener for the minting event
+      listenForMintEvent(contract, signerAddress);
+
+      // Perform the minting operation
+      await contract.mintImage(imageUrl, imageName, imageDescription);
+      // The event listener will handle the rest after the minting operation.
     } catch (error) {
       console.error('Minting error:', error);
       setErrorMessage(`Minting failed: ${error.message || 'Unknown error occurred'}`);
-    } finally {
       setIsMinting(false);
     }
   };
+
+  // Clean up the event listener when the component is unmounted
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(contractAddress, contractABI, provider);
+
+    return () => {
+      contract.removeAllListeners('ImageMinted');
+    };
+  }, []);
 
   return (
     <div>
@@ -46,6 +68,13 @@ const MintImage = ({ imageUrl, imageName, imageDescription }) => {
         {isMinting ? 'Minting...' : 'Mint Image'}
       </button>
       {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+      {mintedNft && (
+        <div className="mt-4">
+          <p><strong>Name:</strong> {mintedNft.name}</p>
+          <p><strong>Description:</strong> {mintedNft.description}</p>
+          <img src={mintedNft.tokenURI} alt={mintedNft.name} style={{ width: '100%', height: 'auto' }} />
+        </div>
+      )}
     </div>
   );
 };

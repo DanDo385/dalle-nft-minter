@@ -13,24 +13,23 @@ contract ImageMinter is ERC721, Ownable {
     mapping(uint256 => string) public tokenNames;
     mapping(uint256 => string) public tokenDescriptions;
 
-    event ImageMinted(address indexed minter, uint256 indexed tokenId, string tokenURI, string name, string description);
+    event ImageMinted(address indexed minter, uint256 indexed tokenId, string _tokenURI, string name, string description);
 
     constructor() ERC721("ImageMinter", "IMT") {}
 
-    function mintImage(string memory tokenURI, string memory name, string memory description) public returns (uint256) {
-        require(bytes(tokenURI).length > 0, "Token URI is required");
+    function mintImage(string memory imageURI, string memory name, string memory description) public returns (uint256) {
+        require(bytes(imageURI).length > 0, "Image URI is required");
         require(bytes(name).length > 0, "Name is required");
         require(bytes(description).length > 0, "Description is required");
-        require(bytes(tokenURI).length > 5 && compareStringsByBytes(substring(tokenURI, bytes(tokenURI).length - 4), ".png"), "Image must be a PNG");
-
+        
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _mint(msg.sender, newItemId);
-        _setTokenURI(newItemId, tokenURI);
+        _setTokenURI(newItemId, imageURI);
         tokenNames[newItemId] = name;
         tokenDescriptions[newItemId] = description;
 
-        emit ImageMinted(msg.sender, newItemId, tokenURI, name, description);
+        emit ImageMinted(msg.sender, newItemId, imageURI, name, description);
         return newItemId;
     }
 
@@ -44,7 +43,7 @@ contract ImageMinter is ERC721, Ownable {
         return _tokenURIs[tokenId];
     }
 
-    // Helper function to compare strings
+    // Helper function to compare strings by bytes
     function compareStringsByBytes(string memory s1, string memory s2) private pure returns(bool){
         return keccak256(bytes(s1)) == keccak256(bytes(s2));
     }

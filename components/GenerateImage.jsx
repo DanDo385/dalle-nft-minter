@@ -1,4 +1,5 @@
-// components/GenerateImage.jsx
+//components/GenerateImage.jsx
+
 import { useState } from 'react';
 
 export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
@@ -20,10 +21,10 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
         body: JSON.stringify({ prompt }),
       });
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      
-      const data = await response.json();
-      onImageGenerated(data.metadata.image); // Call the callback with the image URL
-      onDetailsProvided(data.metadata.image, name, data.metadata.description); // Provide additional details
+
+      const { metadata } = await response.json();
+      onImageGenerated(metadata.image);  // Pass the image URL as is
+      onDetailsProvided(metadata.image, name, prompt);  // Use prompt as description
     } catch (error) {
       console.error('Failed to generate image:', error);
       alert(`Failed to generate image: ${error.message}`);
@@ -55,7 +56,7 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
       <button
         onClick={handleGenerateImage}
         disabled={isLoading || !prompt.trim() || !name.trim()}
-        className="bg-green-400 hover:bg-green-500 text-white font-bold py-2 px-4 rounded"
+        className="bg-green-400 hover:bg-black text-black hover:text-green-400 font-bold py-2 px-4 rounded"
       >
         {isLoading ? 'Generating...' : 'Generate Image'}
       </button>

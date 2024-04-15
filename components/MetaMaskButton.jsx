@@ -35,4 +35,4 @@ const MetaMaskButton = () => {
   );
 };
 
-export default MetaMaskButton;
+  export default MetaMaskButton;
