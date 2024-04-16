@@ -21,10 +21,20 @@ export default function ImagePage() {
     setIpfsUri(uri);
   };
 
+  // This function will handle the details provided from the GenerateImage component
+  const handleDetailsProvided = (image, name, description) => {
+    // Set the details for the NFT here
+    // This might include setting state, logging, or other actions
+    console.log("Image URL:", image);
+    console.log("NFT Name:", name);
+    console.log("NFT Description:", description);
+    // If you have further processing or state updates, do them here
+  };
+
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold">Enter Prompt Below</h1>
-      <GenerateImage onImageGenerated={handleImageGenerated} />
+      <GenerateImage onImageGenerated={handleImageGenerated} onDetailsProvided={handleDetailsProvided} />
       {imageUrl && !ipfsUri && (
         <UploadIPFS imageUrl={imageUrl} onUpload={handleUploadToIPFS} />
       )}
