@@ -11,40 +11,30 @@ export default function ImagePage() {
   const [nftDescription, setNftDescription] = useState('');
   const [ipfsUri, setIpfsUri] = useState('');
 
-  const handleImageGenerated = (url) => {
+  const handleImageGenerated = (url, description) => {
     setImageUrl(url);
+    setNftDescription(description); // Set the description from the image generation prompt
   };
 
-  const handleUploadToIPFS = (name, description, uri) => {
+  const handleUploadToIPFS = (name, uri) => {
     setNftName(name);
-    setNftDescription(description);
     setIpfsUri(uri);
-  };
-
-  // This function will handle the details provided from the GenerateImage component
-  const handleDetailsProvided = (image, name, description) => {
-    // Set the details for the NFT here
-    // This might include setting state, logging, or other actions
-    console.log("Image URL:", image);
-    console.log("NFT Name:", name);
-    console.log("NFT Description:", description);
-    // If you have further processing or state updates, do them here
   };
 
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold">Enter Prompt Below</h1>
-      <GenerateImage onImageGenerated={handleImageGenerated} onDetailsProvided={handleDetailsProvided} />
+      <GenerateImage onImageGenerated={handleImageGenerated} />
+      {imageUrl && (
+        <div className="my-4">
+          <Image src={imageUrl} alt="Generated Art" width={500} height={500} layout="responsive" />
+        </div>
+      )}
       {imageUrl && !ipfsUri && (
-        <UploadIPFS imageUrl={imageUrl} onUpload={handleUploadToIPFS} />
+        <UploadIPFS imageUrl={imageUrl} nftDescription={nftDescription} onUpload={handleUploadToIPFS} />
       )}
       {ipfsUri && (
-        <>
-          <div className="mt-4">
-            <Image src={imageUrl} alt="Generated" width={500} height={500} layout="responsive" />
-          </div>
-          <MintImage ipfsUri={ipfsUri} imageName={nftName} imageDescription={nftDescription} />
-        </>
+        <MintImage ipfsUri={ipfsUri} imageName={nftName} imageDescription={nftDescription} />
       )}
     </div>
   );

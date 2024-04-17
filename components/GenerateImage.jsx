@@ -1,12 +1,11 @@
-//components/GenerateImage.jsx
+// components/GenerateImage.jsx
 import { useState } from 'react';
 
-export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
+export default function GenerateImage({ onImageGenerated }) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGenerateImage = async (event) => {
-    event.preventDefault();  // Prevent default form behavior
+  const handleGenerateImage = async () => {
     if (!prompt.trim()) {
       alert('Please enter a prompt for your NFT.');
       return;
@@ -22,8 +21,7 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const { metadata } = await response.json();
-      onImageGenerated(metadata.image);  // Pass the image URL as is
-      onDetailsProvided(metadata.image, metadata.name, prompt);  // Use prompt as description
+      onImageGenerated(metadata.image, metadata.description);  // Pass the image URL and description
     } catch (error) {
       console.error('Failed to generate image:', error);
       alert(`Failed to generate image: ${error.message}`);
@@ -34,25 +32,21 @@ export default function GenerateImage({ onImageGenerated, onDetailsProvided }) {
 
   return (
     <div className="p-4">
-      <form onSubmit={handleGenerateImage}>
-        <div className="mb-4">
-          <input
-            type="text"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            className="border p-2 w-full"
-            placeholder="Enter a prompt"
-            disabled={isLoading}
-          />
-        </div>
-        <button
-          type="submit"  // Ensure this is of type submit to trigger form submission
-          disabled={isLoading || !prompt.trim()}
-          className="bg-green-400 hover:bg-black text-black hover:text-green-400 font-bold py-2 px-4 rounded"
-        >
-          {isLoading ? 'Generating...' : 'Generate Image'}
-        </button>
-      </form>
+      <input
+        type="text"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        className="border p-2 w-full"
+        placeholder="Enter a prompt"
+        disabled={isLoading}
+      />
+      <button
+        onClick={handleGenerateImage}
+        disabled={isLoading || !prompt.trim()}
+        className="bg-green-400 hover:bg-black text-black hover:text-green-400 font-bold py-2 px-4 rounded"
+      >
+        {isLoading ? 'Generating...' : 'Generate Image'}
+      </button>
     </div>
   );
 }
