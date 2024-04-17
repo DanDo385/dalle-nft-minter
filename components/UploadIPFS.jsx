@@ -1,12 +1,13 @@
 // components/UploadIPFS.jsx
 import { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
-const UploadIPFS = ({ imageUrl, nftDescription, onUpload }) => {
+const UploadIPFS = ({ imageUrl, nftDescription, onImageGenerated }) => {
   const [name, setName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const router = useRouter();
 
-  // Function to upload metadata to IPFS using Pinata
   const uploadToIPFS = async (metadata) => {
     const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
     const body = JSON.stringify(metadata);
@@ -18,34 +19,29 @@ const UploadIPFS = ({ imageUrl, nftDescription, onUpload }) => {
 
     try {
       const response = await axios.post(url, body, { headers });
-      return `https://ipfs.io/ipfs/${response.data.IpfsHash}`;
-    } catch (error) {
-      console.error('Axios error response:', error.response ? error.response.data : error);
-      throw new Error('Failed to upload to IPFS', error);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!name.trim()) {
-      alert('Please enter a name for the NFT.');
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      const metadata = {
-        name,
-        description: nftDescription,
-        image: imageUrl,
-      };
-      const ipfsUri = await uploadToIPFS(metadata);
-      onUpload(name, ipfsUri);
+      if (response.status === 200) {
+        const ipfsUri = `https://ipfs.io/ipfs/${response.data.IpfsHash}`;
+        onImageGenerated(name, ipfsUri);
+        router.push('/upload'); // Redirect to upload page
+      } else {
+        throw new Error('Failed to upload to IPFS');
+      }
     } catch (error) {
       console.error('Error uploading to IPFS:', error);
       alert(`Error uploading to IPFS: ${error.message}`);
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleUpload = () => {
+    if (!name.trim()) {
+      alert('Please enter a name for the NFT.');
+      return;
+    }
+    setIsUploading(true);
+    const metadata = { name, description: nftDescription, image: imageUrl };
+    uploadToIPFS(metadata);
   };
 
   return (
