@@ -1,11 +1,12 @@
-// pages/images/index.js
-import { useState } from 'react';
+// pages/images/index.jsimport { useState } from 'react';
 import { useRouter } from 'next/router';
 import GenerateImage from '../../components/GenerateImage';
 import Image from 'next/image';
 
 export default function ImagePage() {
   const [imageUrl, setImageUrl] = useState('');
+  const [nftName, setNftName] = useState('');
+  const [nftDescription, setNftDescription] = useState('');
   const router = useRouter();
 
   const handleImageGenerated = (url) => {
@@ -13,12 +14,14 @@ export default function ImagePage() {
   };
 
   const handleRedirectToUpload = () => {
-    router.push(`/upload?imageUrl=${encodeURIComponent(imageUrl)}`);
+    router.push(`/upload?imageUrl=${encodeURIComponent(imageUrl)}&nftName=${encodeURIComponent(nftName)}&nftDescription=${encodeURIComponent(nftDescription)}`);
   };
 
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold">Enter Prompt Below</h1>
+      <input type="text" placeholder="Enter NFT Name" value={nftName} onChange={(e) => setNftName(e.target.value)} />
+      <textarea placeholder="Enter Description" value={nftDescription} onChange={(e) => setNftDescription(e.target.value)} />
       <GenerateImage onImageGenerated={handleImageGenerated} />
       {imageUrl && (
         <>
