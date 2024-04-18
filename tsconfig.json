@@ -2,9 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@/components/*": ["components/*"]
     },
     "lib": [
       "dom",
@@ -28,8 +27,11 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js"
-, "server.js", "postcss.config.js", "pages/upload.jsx"  ],
+    "**/*.js",
+    "server.js",
+    "postcss.config.js",
+    "pages/upload.jsx"
+  ],
   "exclude": [
     "node_modules"
   ]

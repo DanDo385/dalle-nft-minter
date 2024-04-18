@@ -1,6 +1,6 @@
-// pages/upload.jsx
+// pages/upload.js
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import UploadIPFS from '../../components/UploadIPFS';
 import MintImage from '../../components/MintImage';

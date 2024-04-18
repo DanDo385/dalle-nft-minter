@@ -1,16 +1,16 @@
-// components/UploadIPFS.jsx
+// components/UploadIpfs.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import TextArea from './ui/TextArea';
 
-const UploadIPFS = ({ imageUrl, onUploadSuccess }) => {
+const UploadIpfs = ({ imageUrl, onUploadSuccess }) => {
     const [nftName, setNftName] = useState('');
     const [nftDescription, setNftDescription] = useState('');
     const [isUploading, setIsUploading] = useState(false);
 
-    const uploadToIPFS = async (blob) => {
+    const uploadToIpfs = async (blob) => {
         setIsUploading(true);
         const formData = new FormData();
         formData.append('file', blob, `${nftName}.png`);
@@ -48,7 +48,7 @@ const UploadIPFS = ({ imageUrl, onUploadSuccess }) => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const blob = await response.blob();
-            uploadToIPFS(blob);
+            uploadToIpfs(blob);
         } catch (error) {
             console.error('Error fetching image for upload:', error);
             alert('Error fetching image for upload: ' + error.message);
@@ -78,4 +78,4 @@ const UploadIPFS = ({ imageUrl, onUploadSuccess }) => {
     );
 };
 
-export default UploadIPFS;
+export default UploadIpfs;

@@ -1,54 +1,52 @@
-//pages/images.jsx
+// pages/images.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import UploadIPFS from '../../components/UploadIPFS';
-import MintImage from '../../components/MintImage';
+import GenerateImage from '@/components/GenerateImage'; // Ensure this is correct
+import Image from 'next/image';
+import Input from '@/components/ui/Input'; // Import Input component
+import TextArea from '@/components/ui/TextArea'; // Import TextArea component
+import Button from '@/components/ui/Button'; // Import Button component
 
-export default function UploadPage() {
-  const router = useRouter();
-  const { imageUrl } = router.query;
+export default function ImagePage() {
+  const [imageUrl, setImageUrl] = useState('');
   const [nftName, setNftName] = useState('');
   const [nftDescription, setNftDescription] = useState('');
-  const [ipfsUri, setIpfsUri] = useState('');
+  const router = useRouter();
 
-  useEffect(() => {
-    // This would be the place to set the image URL state, 
-    // but for now, we are directly using the query param
-  }, [imageUrl]);
+  const handleImageGenerated = (url) => {
+    setImageUrl(url);
+  };
 
-  const handleUploadToIPFS = (ipfsHash) => {
-    setIpfsUri(ipfsHash);
+  const handleRedirectToUpload = () => {
+    // Pass the image URL, NFT name, and description to the upload page
+    router.push(`/upload?imageUrl=${encodeURIComponent(imageUrl)}&nftName=${encodeURIComponent(nftName)}&nftDescription=${encodeURIComponent(nftDescription)}`);
   };
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold">Upload to IPFS and Mint NFT</h1>
-      {imageUrl && !ipfsUri && (
+      <h1 className="text-xl font-bold">Enter Image Generation Prompt</h1>
+      <Input 
+        type="text" 
+        placeholder="Enter NFT Name" 
+        value={nftName} 
+        onChange={(e) => setNftName(e.target.value)} 
+      />
+      <TextArea 
+        placeholder="Enter Description" 
+        value={nftDescription} 
+        onChange={(e) => setNftDescription(e.target.value)} 
+      />
+      <GenerateImage onImageGenerated={handleImageGenerated} />
+      {imageUrl && (
         <>
-          <input
-            type="text"
-            placeholder="Enter NFT Name"
-            value={nftName}
-            onChange={(e) => setNftName(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <textarea
-            placeholder="Enter Description"
-            value={nftDescription}
-            onChange={(e) => setNftDescription(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <UploadIPFS
-            imageUrl={decodeURIComponent(imageUrl)}
-            nftName={nftName}
-            nftDescription={nftDescription}
-            onUpload={handleUploadToIPFS}
-          />
+          <div className="my-4">
+            <Image src={imageUrl} alt="Generated Art" width={500} height={500} layout="responsive" />
+          </div>
+          <Button onClick={handleRedirectToUpload}>
+            Proceed to Upload
+          </Button>
         </>
-      )}
-      {ipfsUri && (
-        <MintImage ipfsUri={ipfsUri} imageName={nftName} imageDescription={nftDescription} />
       )}
     </div>
   );
