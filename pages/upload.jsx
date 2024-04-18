@@ -1,8 +1,11 @@
-// pages/upload.js
-import { useState, useEffect } from 'react';
+// pages/upload.jsx
+
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import UploadIPFS from '../../components/UploadIPFS';
 import MintImage from '../../components/MintImage';
+import Input from '../../components/ui/Input';
+import TextArea from '../../components/ui/TextArea';
 
 export default function UploadPage() {
   const router = useRouter();
@@ -25,18 +28,16 @@ export default function UploadPage() {
       <h1 className="text-xl font-bold">Upload to IPFS and Mint NFT</h1>
       {imageUrl && !ipfsUri && (
         <>
-          <input
+          <Input
             type="text"
             placeholder="Enter NFT Name"
             value={nftName}
             onChange={(e) => setNftName(e.target.value)}
-            className="border p-2 w-full"
           />
-          <textarea
+          <TextArea
             placeholder="Enter Description"
             value={nftDescription}
             onChange={(e) => setNftDescription(e.target.value)}
-            className="border p-2 w-full"
           />
           <UploadIPFS
             imageUrl={decodeURIComponent(imageUrl)}

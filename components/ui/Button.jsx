@@ -1,7 +1,5 @@
 //components/ui/Button.jsx
 
-// components/ui/Button.jsx
-
 const Button = ({ children, onClick, disabled }) => {
     return (
         <button

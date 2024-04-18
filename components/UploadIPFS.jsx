@@ -57,4 +57,25 @@ const UploadIPFS = ({ imageUrl, onUploadSuccess }) => {
 
     return (
         <div>
- 
+            <Input 
+                type="text"
+                value={nftName}
+                onChange={(e) => setNftName(e.target.value)}
+                placeholder="Enter NFT name"
+            />
+            <TextArea 
+                value={nftDescription}
+                onChange={(e) => setNftDescription(e.target.value)}
+                placeholder="Enter NFT description"
+            />
+            <Button
+                onClick={convertToBlobAndUpload}
+                disabled={isUploading || !nftName || !nftDescription}
+            >
+                {isUploading ? 'Uploading...' : 'Upload to IPFS'}
+            </Button>
+        </div>
+    );
+};
+
+export default UploadIPFS;

@@ -1,15 +1,15 @@
 // components/ui/TextArea.jsx
 
-const Button = ({ children, onClick, disabled }) => {
+const TextArea = ({ value, onChange, placeholder, disabled }) => {
     return (
-        <button
-            onClick={onClick}
+        <textarea
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
             disabled={disabled}
-            className="bg-green-400 hover:bg-black text-black hover:text-green-400 font-bold py-2 px-4 rounded disabled:opacity-50"
-        >
-            {children}
-        </button>
+            className="bg-gray-700 text-green-400 border-green-400 border p-2 w-full rounded"
+        />
     );
 };
 
-export default Button;
+export default TextArea;
