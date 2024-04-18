@@ -1,4 +1,5 @@
-// pages/images/index.jsimport { useState } from 'react';
+// pages/images/index.js
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import GenerateImage from '../../components/GenerateImage';
 import Image from 'next/image';

@@ -1,6 +1,6 @@
 //pages/upload.js
 import { useRouter } from 'next/router';
-import UploadIPFS from '../../components/UploadIPFS';
+import UploadIPFS from '@/components/UploadIPFS';
 import { useState, useEffect } from 'react';
 
 export default function UploadPage() {
