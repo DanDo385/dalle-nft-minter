@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import UploadIPFS from '../../components/UploadIPFS';
-import MintImage from '../../components/MintImage';
-import Input from '../../components/ui/Input';
-import TextArea from '../../components/ui/TextArea';
+import UploadIpfs from '@/components/UploadIpfs';
+import MintImage from '@/components/MintImage';
+import Input from '@/components/ui/Input';
+import TextArea from '@/components/ui/TextArea';
 
 export default function UploadPage() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function UploadPage() {
             value={nftDescription}
             onChange={(e) => setNftDescription(e.target.value)}
           />
-          <UploadIPFS
+          <UploadIpfs
             imageUrl={decodeURIComponent(imageUrl)}
             nftName={nftName}
             nftDescription={nftDescription}

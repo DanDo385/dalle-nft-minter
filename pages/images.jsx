@@ -25,7 +25,7 @@ export default function ImagePage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold">Enter Image Generation Prompt</h1>
+      
       <Input 
         type="text" 
         placeholder="Enter NFT Name" 
