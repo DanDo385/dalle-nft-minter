@@ -1,13 +1,9 @@
 // components/UploadIpfs.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Button from './ui/Button';
-import Input from './ui/Input';
-import TextArea from './ui/TextArea';
 
-const UploadIpfs = ({ imageUrl, onUploadSuccess }) => {
-    const [nftName, setNftName] = useState('');
-    const [nftDescription, setNftDescription] = useState('');
+const UploadIpfs = ({ imageUrl, nftName, nftDescription, onUploadSuccess }) => {
     const [isUploading, setIsUploading] = useState(false);
 
     const uploadToIpfs = async (blob) => {
@@ -29,7 +25,7 @@ const UploadIpfs = ({ imageUrl, onUploadSuccess }) => {
             });
 
             if (response.status === 200) {
-                onUploadSuccess(response.data.IpfsHash, nftName, nftDescription);
+                onUploadSuccess(response.data.IpfsHash);
             } else {
                 throw new Error(`Failed to upload to IPFS. Status: ${response.status}`);
             }
@@ -56,25 +52,12 @@ const UploadIpfs = ({ imageUrl, onUploadSuccess }) => {
     };
 
     return (
-        <div>
-            <Input 
-                type="text"
-                value={nftName}
-                onChange={(e) => setNftName(e.target.value)}
-                placeholder="Enter NFT name"
-            />
-            <TextArea 
-                value={nftDescription}
-                onChange={(e) => setNftDescription(e.target.value)}
-                placeholder="Enter NFT description"
-            />
-            <Button
-                onClick={convertToBlobAndUpload}
-                disabled={isUploading || !nftName || !nftDescription}
-            >
-                {isUploading ? 'Uploading...' : 'Upload to IPFS'}
-            </Button>
-        </div>
+        <Button
+            onClick={convertToBlobAndUpload}
+            disabled={isUploading || !nftName || !nftDescription}
+        >
+            {isUploading ? 'Uploading...' : 'Upload to IPFS'}
+        </Button>
     );
 };
 

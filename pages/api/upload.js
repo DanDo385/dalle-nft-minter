@@ -1,10 +1,7 @@
 // pages/api/upload.js
-import { NextApiRequest, NextApiResponse } from 'next';
-
 export const config = {
   api: {
     bodyParser: false,
-  },
 };
 
 export default async function handler(req, res) {
@@ -25,7 +22,7 @@ export default async function handler(req, res) {
       if (!pinataResponse.ok) throw new Error(pinataJson.error);
 
       res.status(200).json({ IpfsHash: pinataJson.IpfsHash });
-    } catch (error) {
+    } catch ( error ) {
       console.error('Failed to upload to IPFS:', error);
       res.status(500).json({ error: 'Failed to upload to IPFS' });
     }
