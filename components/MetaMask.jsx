@@ -27,7 +27,7 @@ const MetaMask = () => {
 
     return (
         <div>
-            <Button onClick={handleSignIn} className="flex items-center bg-orange-400 hover:bg-orange-600 text-slate-900 p-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+            <Button onClick={handleSignIn} className="flex items-center justify-center bg-orange-400 hover:bg-orange-600 text-slate-900 p-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
                 <Image src="/images/metamask.jpg" alt="MetaMask" width={40} height={40} unoptimized />
                 <span className="ml-2">Sign In to MetaMask</span>
             </Button>

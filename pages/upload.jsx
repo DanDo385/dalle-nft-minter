@@ -1,32 +1,30 @@
 // pages/upload.js
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import UploadIpfs from '@/components/UploadIpfs';
+import UploadIPFS from '@/components/UploadIPFS';
 import MintImage from '@/components/MintImage';
 import Input from '@/components/ui/Input';
 import TextArea from '@/components/ui/TextArea';
+import Button from '@/components/ui/Button';
 
 export default function UploadPage() {
   const router = useRouter();
-  const { imageUrl } = router.query;
-  const [nftName, setNftName] = useState('');
-  const [nftDescription, setNftDescription] = useState('');
+  const { imageUrl, nftName: queryNftName, nftDescription: queryNftDescription } = router.query;
+  const [nftName, setNftName] = useState(queryNftName || '');
+  const [nftDescription, setNftDescription] = useState(queryNftDescription || '');
   const [ipfsUri, setIpfsUri] = useState('');
 
-  useEffect(() => {
-    // This would be the place to set the image URL state, 
-    // but for now, we are directly using the query param
-  }, [imageUrl]);
-
-  const handleUploadToIPFS = (ipfsHash) => {
+  const handleUploadToIPFS = (ipfsHash, name, description) => {
     setIpfsUri(ipfsHash);
+    setNftName(name);
+    setNftDescription(description);
   };
 
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold">Upload to IPFS and Mint NFT</h1>
-      {imageUrl && !ipfsUri && (
+      {!ipfsUri && (
         <>
           <Input
             type="text"
@@ -39,16 +37,23 @@ export default function UploadPage() {
             value={nftDescription}
             onChange={(e) => setNftDescription(e.target.value)}
           />
-          <UploadIpfs
-            imageUrl={decodeURIComponent(imageUrl)}
-            nftName={nftName}
-            nftDescription={nftDescription}
-            onUpload={handleUploadToIPFS}
-          />
+          {imageUrl && (
+            <UploadIPFS
+              imageUrl={decodeURIComponent(imageUrl)}
+              nftName={nftName}
+              nftDescription={nftDescription}
+              onUpload={handleUploadToIPFS}
+            />
+          )}
         </>
       )}
       {ipfsUri && (
-        <MintImage ipfsUri={ipfsUri} imageName={nftName} imageDescription={nftDescription} />
+        <>
+          <div>
+            <strong>IPFS URI:</strong> {ipfsUri}
+          </div>
+          <MintImage ipfsUri={ipfsUri} imageName={nftName} imageDescription={nftDescription} />
+        </>
       )}
     </div>
   );
