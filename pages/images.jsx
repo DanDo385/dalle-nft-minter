@@ -29,7 +29,7 @@ export default function ImagePage() {
             <Image src={imageUrl} alt="Generated Art" width={500} height={500} layout="responsive" />
           </div>
           <Button onClick={handleRedirectToUpload}>
-            Proceed to Upload
+            Proceed to Upload to IPFS
           </Button>
         </>
       )}

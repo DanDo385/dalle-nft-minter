@@ -1,6 +1,5 @@
 // components/UploadIpfs.jsx
 import { useState } from 'react';
-import axios from 'axios';
 import Button from './ui/Button';
 
 const UploadIpfs = ({ imageUrl, nftName, nftDescription, onUploadSuccess }) => {
@@ -8,24 +7,19 @@ const UploadIpfs = ({ imageUrl, nftName, nftDescription, onUploadSuccess }) => {
 
     const uploadToIpfs = async (blob) => {
         setIsUploading(true);
+        
         const formData = new FormData();
         formData.append('file', blob, `${nftName}.png`);
-        formData.append('pinataMetadata', JSON.stringify({
-            name: nftName,
-            keyvalues: {
-                description: nftDescription
-            }
-        }));
 
         try {
-            const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
-                headers: {
-                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`
-                }
+            const response = await fetch('/api/uploadToIPFS', {
+                method: 'POST',
+                body: formData,
             });
 
-            if (response.status === 200) {
-                onUploadSuccess(response.data.IpfsHash);
+            if (response.ok) {
+                const { ipfsHash } = await response.json();
+                onUploadSuccess(ipfsHash);
             } else {
                 throw new Error(`Failed to upload to IPFS. Status: ${response.status}`);
             }
