@@ -1,4 +1,3 @@
-// components/UploadIpfs.jsx
 import { useState } from 'react';
 import Button from './ui/Button';
 
@@ -7,7 +6,7 @@ const UploadIpfs = ({ imageUrl, nftName, nftDescription, onUploadSuccess }) => {
 
     const uploadToIpfs = async (blob) => {
         setIsUploading(true);
-        
+
         const formData = new FormData();
         formData.append('file', blob, `${nftName}.png`);
 
@@ -33,7 +32,8 @@ const UploadIpfs = ({ imageUrl, nftName, nftDescription, onUploadSuccess }) => {
 
     const convertToBlobAndUpload = async () => {
         try {
-            const response = await fetch(imageUrl);
+            const proxyUrl = `/api/proxy?imageUrl=${encodeURIComponent(imageUrl)}`;
+            const response = await fetch(proxyUrl);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
