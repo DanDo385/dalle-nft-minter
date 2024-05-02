@@ -5,14 +5,16 @@ const { ethers } = require('ethers');
 const fs = require('fs');
 const path = require('path');
 
-// Assuming PRIVATE_KEY and INFURA_PROJECT_ID are set in your .env file
+console.log(process.env.PRIVATE_KEY);
+
+// Assuming PRIVATE_KEY and  are set in your .env file
 const privateKey = process.env.PRIVATE_KEY;
 if (!privateKey || !privateKey.startsWith('0x')) {
     console.error('Invalid or missing PRIVATE_KEY environment variable.');
     process.exit(1);
 }
 
-const infuraProjectId = process.env.INFURA_PROJECT_ID;
+const infuraProjectId = process.env.INFURA_API_KEY;
 // Adjust 'sepolia' to the network you intend to use or have configured in Infura
 const provider = new ethers.providers.InfuraProvider('sepolia', infuraProjectId);
 const wallet = new ethers.Wallet(privateKey, provider);
