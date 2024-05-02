@@ -26,11 +26,8 @@ export default function ImagePage() {
       {imageUrl && (
         <>
           <div className="my-4">
-            <Image src={imageUrl} alt="Generated Art" width={500} height={500} layout="responsive" />
+            <Image src={imageUrl} alt="DALLE-3 Generated Art" width={500} height={500} layout="responsive" />
           </div>
-          <Button onClick={handleRedirectToUpload}>
-            Proceed to Upload to IPFS
-          </Button>
         </>
       )}
     </div>

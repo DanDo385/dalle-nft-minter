@@ -1,50 +1,55 @@
 // components/MintImage.jsx
-import { useState } from 'react';
-import { ethers } from 'ethers';
-import ImageMinterABI from '../build/ImageMinterABI.json';
-import DeployedAddress from '../build/DeployedAddress.json';
+
+import React, { useState } from 'react';
+import Input from './ui/Input';
+import TextArea from './ui/TextArea';
 import Button from './ui/Button';
+import fs from 'fs';
+import path from 'path';
 
-const contractAddress = DeployedAddress.address; 
-const MintImage = ({ ipfsUri, imageName, imageDescription }) => {
-    const [isMinting, setIsMinting] = useState(false);
-    const [transactionHash, setTransactionHash] = useState('');
+const MintImage = ({ signer }) => {
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [ipfsUrl, setIpfsUrl] = useState('');
 
-    const mintNFT = async () => {
-        if (!window.ethereum) {
-            alert('Please install MetaMask to use this feature!');
-            return;
-        }
+    const handleSaveMetadata = async (event) => {
+        event.preventDefault();
 
-        setIsMinting(true);
+        const metadata = {
+            name: name,
+            description: description,
+            image: ipfsUrl
+        };
+
+        // Write metadata to the 'build' folder (or any appropriate directory)
+        fs.writeFileSync(path.join(process.cwd(), 'build', 'metadata.json'), JSON.stringify(metadata, null, 2));
+
+        alert('Metadata saved locally. Please upload to IPFS and update the IPFS URL.');
+    };
+
+    const handleMintNFT = async (event) => {
+        event.preventDefault();
 
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            const contract = new ethers.Contract(contractAddress, ImageMinterABI, signer);
+            const contract = new ethers.Contract(contractAddress, contractABI, signer);
+            const transaction = await contract.mintImage(ipfsUrl, name, description);
+            await transaction.wait();
 
-            const transaction = await contract.mintImage(ipfsUri, imageName, imageDescription);
-            const tx = await transaction.wait();
-
-            setTransactionHash(tx.transactionHash);
-            alert(`NFT minted! Transaction Hash: ${tx.transactionHash}`);
+            alert('NFT Minted Successfully');
         } catch (error) {
-            console.error('Minting error:', error);
-            alert('Minting failed: ' + error.message);
-        } finally {
-            setIsMinting(false);
+            console.error('Error minting NFT:', error);
+            alert('Failed to mint NFT');
         }
     };
 
     return (
-        <div>
-            <Button onClick={mintNFT} disabled={isMinting} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded my-2">
-                {isMinting ? 'Minting...' : 'Mint NFT'}
-            </Button>
-            {transactionHash && (
-                <p>Transaction Hash: {transactionHash}</p>
-            )}
-        </div>
+        <form className="space-y-4">
+            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+            <TextArea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
+            <Input type="text" value={ipfsUrl} onChange={(e) => setIpfsUrl(e.target.value)} placeholder="IPFS URL" />
+            <Button onClick={handleSaveMetadata}>Save Metadata</Button>
+            <Button onClick={handleMintNFT}>Mint NFT</Button>
+        </form>
     );
 };
 

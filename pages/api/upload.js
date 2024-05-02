@@ -1,12 +1,14 @@
 // pages/api/upload.js
 
-import ipfsClient from 'ipfs-http-client';
+import { create } from 'ipfs-http-client';
 
-const ipfs = ipfsClient('http://localhost:5001'); // Update with your IPFS node address
+// Update to connect to the IPFS node on the correct port
+const ipfs = create({ url: 'http://localhost:5003' });
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { file } = req.body;
+    const data = await parseFormData(req);
+    const file = data.files.file[0]; // Assuming file is uploaded under the 'file' key
 
     try {
       const ipfsResponse = await ipfs.add(file);
