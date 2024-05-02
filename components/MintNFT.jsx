@@ -1,17 +1,21 @@
-// components/MintImage.jsx
+// components/MintNFT.jsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from './ui/Button';
+import { ethers } from 'ethers';
 
-const MintNFT = ({ signer }) => {
+// Correct paths to the ABI and address JSON files
+import contractABI from '../build/ImageMinterABI.json';
+import deployedAddress from '../build/DeployedAddress.json';
+
+const MintNFT = ({ signer, ipfsUrl }) => {
     const [metadataUri, setMetadataUri] = useState('');
 
     useEffect(() => {
-        // Fetch metadata URI from where it's stored
-        fetch('/path/to/metadata.json')
+        // Fetch the metadata URI once the component mounts
+        fetch('/api/getMetadata')  // Adjust if needed to ensure it fetches the correct data
             .then(response => response.json())
             .then(data => {
-                // Assuming the metadata JSON has a property `ipfsUrl`
                 setMetadataUri(data.ipfsUrl);
             });
     }, []);
@@ -23,6 +27,7 @@ const MintNFT = ({ signer }) => {
         }
 
         try {
+            const contractAddress = deployedAddress.address; // Extract the contract address
             const contract = new ethers.Contract(contractAddress, contractABI, signer);
             const transaction = await contract.mintImage(metadataUri);
             await transaction.wait();
