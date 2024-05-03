@@ -5,7 +5,7 @@ import path from 'path';
 
 export default function handler(req, res) {
     const data = req.body;
-    const filePath = path.join(process.cwd(), 'public', 'metadata.json'); // Save in public for easy access or elsewhere securely
+    const filePath = path.join(process.cwd(), 'build', 'metadata.json'); // Save in public for easy access or elsewhere securely
 
     fs.writeFile(filePath, JSON.stringify(data, null, 2), err => {
         if (err) {
