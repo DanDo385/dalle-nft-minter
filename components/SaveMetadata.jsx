@@ -5,16 +5,17 @@ import Input from './ui/Input';
 import TextArea from './ui/TextArea';
 import Button from './ui/Button';
 
-const SaveMetadata = () => {
+const SaveMetadata = ({ onMetadataSaved }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [ipfsUrl, setIpfsUrl] = useState('');
+    const [imageIpfsUrl, setImageIpfsUrl] = useState('');
+    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState(''); 
 
     const handleSaveMetadata = async () => {
         const metadata = {
             name,
             description,
-            image: ipfsUrl
+            image: imageIpfsUrl
         };
 
         const response = await fetch('/api/saveMetadata', {
@@ -24,6 +25,7 @@ const SaveMetadata = () => {
         });
 
         if (response.ok) {
+            onMetadataSaved(metadataIpfsUrl); // Pass the metadata IPFS URL up to the parent component
             alert('Metadata saved successfully.');
         } else {
             alert('Failed to save metadata.');
@@ -34,7 +36,8 @@ const SaveMetadata = () => {
         <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
             <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
             <TextArea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-            <Input type="text" value={ipfsUrl} onChange={(e) => setIpfsUrl(e.target.value)} placeholder="IPFS URL" />
+            <Input type="text" value={imageIpfsUrl} onChange={(e) => setImageIpfsUrl(e.target.value)} placeholder="Image IPFS URL" />
+            <Input type="text" value={metadataIpfsUrl} onChange={(e) => setMetadataIpfsUrl(e.target.value)} placeholder="Metadata IPFS URL" />
             <Button onClick={handleSaveMetadata}>Save Metadata</Button>
         </form>
     );
