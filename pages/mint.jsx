@@ -8,10 +8,10 @@ import { ethers } from 'ethers';
 export default function MintPage() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState(''); // State to hold the metadata IPFS URL
+    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');
 
     const handleMetadataSaved = (url) => {
-        setMetadataIpfsUrl(url); // Update state when metadata is saved
+        setMetadataIpfsUrl(url);
     };
 
     return (

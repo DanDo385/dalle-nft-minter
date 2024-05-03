@@ -1,6 +1,6 @@
 // components/SaveMetadata.jsx
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Input from './ui/Input';
 import TextArea from './ui/TextArea';
 import Button from './ui/Button';
@@ -9,7 +9,7 @@ const SaveMetadata = ({ onMetadataSaved }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [imageIpfsUrl, setImageIpfsUrl] = useState('');
-    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState(''); 
+    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');
 
     const handleSaveMetadata = async () => {
         const metadata = {
@@ -25,7 +25,7 @@ const SaveMetadata = ({ onMetadataSaved }) => {
         });
 
         if (response.ok) {
-            onMetadataSaved(metadataIpfsUrl); // Pass the metadata IPFS URL up to the parent component
+            onMetadataSaved(metadataIpfsUrl); // This should pass the metadata URL up to the MintPage
             alert('Metadata saved successfully.');
         } else {
             alert('Failed to save metadata.');
