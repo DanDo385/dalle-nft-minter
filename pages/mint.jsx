@@ -1,46 +1,24 @@
-// components/SaveMetadata.jsx
+// pages/mint.jsx
 
-import { useState } from 'react';
-import Input from './ui/Input';
-import TextArea from './ui/TextArea';
-import Button from './ui/Button';
+import React, { useState } from 'react';
+import SaveMetadata from '../components/SaveMetadata';
+import MintNFT from '../components/MintNFT';
+import { ethers } from 'ethers';
 
-const SaveMetadata = ({ onMetadataSaved }) => {
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [imageIpfsUrl, setImageIpfsUrl] = useState('');
-    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState(''); // New state for metadata IPFS URL
+export default function MintPage() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState(''); // State to hold the metadata IPFS URL
 
-    const handleSaveMetadata = async () => {
-        const metadata = {
-            name,
-            description,
-            image: imageIpfsUrl
-        };
-
-        const response = await fetch('/api/saveMetadata', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(metadata),
-        });
-
-        if (response.ok) {
-            onMetadataSaved(metadataIpfsUrl); // Pass the metadata IPFS URL up to the parent component
-            alert('Metadata saved successfully.');
-        } else {
-            alert('Failed to save metadata.');
-        }
+    const handleMetadataSaved = (url) => {
+        setMetadataIpfsUrl(url); // Update state when metadata is saved
     };
 
     return (
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-            <TextArea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-            <Input type="text" value={imageIpfsUrl} onChange={(e) => setImageIpfsUrl(e.target.value)} placeholder="Image IPFS URL" />
-            <Input type="text" value={metadataIpfsUrl} onChange={(e) => setMetadataIpfsUrl(e.target.value)} placeholder="Metadata IPFS URL" />
-            <Button onClick={handleSaveMetadata}>Save Metadata</Button>
-        </form>
+        <div className="p-4 max-w-xl mx-auto">
+            <h1 className="text-2xl font-bold text-center mb-6">Mint Your NFT</h1>
+            <SaveMetadata onMetadataSaved={handleMetadataSaved} />
+            <MintNFT signer={signer} ipfsUrl={metadataIpfsUrl} />
+        </div>
     );
-};
-
-export default SaveMetadata;
+}
