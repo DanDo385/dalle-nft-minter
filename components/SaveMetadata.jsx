@@ -1,6 +1,6 @@
 // components/SaveMetadata.jsx
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Input from './ui/Input';
 import TextArea from './ui/TextArea';
 import Button from './ui/Button';
@@ -9,15 +9,17 @@ const SaveMetadata = ({ onMetadataSaved }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [imageIpfsUrl, setImageIpfsUrl] = useState('');
-    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');
+    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');  // This holds the IPFS URL for the metadata itself
 
     const handleSaveMetadata = async () => {
+        // Preparing metadata to be saved
         const metadata = {
             name,
             description,
             image: imageIpfsUrl
         };
 
+        // Sending the metadata to be saved at a local API endpoint
         const response = await fetch('/api/saveMetadata', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -25,9 +27,11 @@ const SaveMetadata = ({ onMetadataSaved }) => {
         });
 
         if (response.ok) {
-            onMetadataSaved(metadataIpfsUrl); // This should pass the metadata URL up to the MintPage
+            console.log("Metadata saved successfully:", metadata);
+            onMetadataSaved(metadataIpfsUrl);  // Triggering the callback with the IPFS URL of the metadata
             alert('Metadata saved successfully.');
         } else {
+            console.error('Failed to save metadata.');
             alert('Failed to save metadata.');
         }
     };

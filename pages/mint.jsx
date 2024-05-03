@@ -11,6 +11,7 @@ export default function MintPage() {
     const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');
 
     const handleMetadataSaved = (url) => {
+        console.log("Received Metadata URL:", url); // Debug: Confirm this gets called
         setMetadataIpfsUrl(url);
     };
 
