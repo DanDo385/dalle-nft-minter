@@ -1,6 +1,6 @@
 // components/SaveMetadata.jsx
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Input from './ui/Input';
 import TextArea from './ui/TextArea';
 import Button from './ui/Button';
@@ -9,17 +9,17 @@ const SaveMetadata = ({ onMetadataSaved }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [imageIpfsUrl, setImageIpfsUrl] = useState('');
-    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');  // This holds the IPFS URL for the metadata itself
+    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');
 
     const handleSaveMetadata = async () => {
-        // Preparing metadata to be saved
+        // Constructing metadata object
         const metadata = {
             name,
             description,
             image: imageIpfsUrl
         };
 
-        // Sending the metadata to be saved at a local API endpoint
+        // Making an API call to save the metadata
         const response = await fetch('/api/saveMetadata', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -28,7 +28,12 @@ const SaveMetadata = ({ onMetadataSaved }) => {
 
         if (response.ok) {
             console.log("Metadata saved successfully:", metadata);
-            onMetadataSaved(metadataIpfsUrl);  // Triggering the callback with the IPFS URL of the metadata
+            // Checking if onMetadataSaved is a function before calling it
+            if (typeof onMetadataSaved === 'function') {
+                onMetadataSaved(metadataIpfsUrl);  // Passing the metadata IPFS URL to the parent component
+            } else {
+                console.error("onMetadataSaved is not a function");
+            }
             alert('Metadata saved successfully.');
         } else {
             console.error('Failed to save metadata.');
