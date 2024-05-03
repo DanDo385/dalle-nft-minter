@@ -4,8 +4,20 @@ import fs from 'fs';
 import path from 'path';
 
 export default function handler(req, res) {
+    // Ensure the request is a POST request
+    if (req.method !== 'POST') {
+        res.setHeader('Allow', ['POST']);
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
+    }
+
     const data = req.body;
-    const filePath = path.join(process.cwd(), 'build', 'metadata.json'); // Save in public for easy access or elsewhere securely
+    const directoryPath = path.join(process.cwd(), 'data'); // Consider using a `data` directory instead
+    const filePath = path.join(directoryPath, 'metadata.json');
+
+    // Ensure directory exists
+    if (!fs.existsSync(directoryPath)) {
+        fs.mkdirSync(directoryPath, { recursive: true });
+    }
 
     fs.writeFile(filePath, JSON.stringify(data, null, 2), err => {
         if (err) {
