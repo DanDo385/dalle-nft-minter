@@ -4,25 +4,17 @@ import fs from 'fs';
 import path from 'path';
 
 export default function handler(req, res) {
-    // Ensure the request is a POST request
     if (req.method !== 'POST') {
-        res.setHeader('Allow', ['POST']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
     const data = req.body;
-    const directoryPath = path.join(process.cwd(), 'data'); // Consider using a `data` directory instead
-    const filePath = path.join(directoryPath, 'metadata.json');
+    const filePath = path.join(process.cwd(), 'build', 'metadata.json');
 
-    // Ensure directory exists
-    if (!fs.existsSync(directoryPath)) {
-        fs.mkdirSync(directoryPath, { recursive: true });
-    }
-
-    fs.writeFile(filePath, JSON.stringify(data, null, 2), err => {
+    fs.writeFile(filePath, JSON.stringify(data, null, 2), (err) => {
         if (err) {
             console.error("Failed to write file:", err);
-            return res.status(500).json({ message: "Failed to save metadata" });
+            return res.status(500).json({ message: "Failed to save metadata", error: err.message });
         }
         res.status(200).json({ message: "Metadata saved successfully" });
     });
