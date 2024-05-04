@@ -1,27 +1,24 @@
 // components/MintNFT.jsx
-import React, { useEffect } from 'react';  // Import React and useEffect hook
-import Button from './ui/Button';  // Ensure Button is correctly imported from your UI components
-import { ethers } from 'ethers';  // Assuming you need ethers here for blockchain interaction
+import React, { useState, useEffect } from 'react';
+import Button from './ui/Button';
+import Input from './ui/Input';
+import { ethers } from 'ethers';
+import contractABI from '../build/ImageMinterABI.json';
+import deployedAddress from '../build/DeployedAddress.json';
 
-const MintNFT = ({ signer, ipfsUrl }) => {
-    useEffect(() => {
-        if (!ipfsUrl) {
-            console.log("IPFS URL is empty on mount.");
-        } else {
-            console.log("IPFS URL on mount:", ipfsUrl);
-        }
-    }, [ipfsUrl]);  // Dependency array to re-run useEffect when ipfsUrl changes
+const MintNFT = ({ signer }) => {
+    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');
 
     const handleMintNFT = async () => {
-        if (!ipfsUrl) {
-            alert('No metadata URL found. Please save metadata first.');
+        if (!metadataIpfsUrl) {
+            alert('Please provide a valid metadata URL before minting.');
             return;
         }
 
         try {
-            // Assuming you have the contract ABI and address already setup elsewhere
+            const contractAddress = deployedAddress.address;
             const contract = new ethers.Contract(contractAddress, contractABI, signer);
-            const transaction = await contract.mintImage(ipfsUrl);  // Assuming mintImage is the correct contract method
+            const transaction = await contract.mintImage(metadataIpfsUrl);
             await transaction.wait();
             alert('NFT Minted Successfully');
         } catch (error) {
@@ -30,7 +27,17 @@ const MintNFT = ({ signer, ipfsUrl }) => {
         }
     };
 
-    return <Button onClick={handleMintNFT}>Mint NFT</Button>;
+    return (
+        <div>
+            <Input
+                type="text"
+                value={metadataIpfsUrl}
+                onChange={(e) => setMetadataIpfsUrl(e.target.value)}
+                placeholder="Metadata IPFS URL"
+            />
+            <Button onClick={handleMintNFT}>Mint NFT</Button>
+        </div>
+    );
 };
 
-export default MintNFT; 
+export default MintNFT;
