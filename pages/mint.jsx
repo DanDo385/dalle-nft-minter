@@ -1,20 +1,21 @@
-// pages/mint.jsx
-import React, { useState } from 'react';
-import MintNFT from '../components/MintNFT';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
+import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import MintNFT from '../components/MintNFT';
 
 export default function MintPage() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const [metadataIpfsUrl, setMetadataIpfsUrl] = useState('');
+    const [signer, setSigner] = useState(null);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.ethereum) {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            setSigner(provider.getSigner());
+        }
+    }, []);
 
     return (
         <div className="p-4 max-w-xl mx-auto">
             <h1 className="text-2xl font-bold text-center mb-6">Mint Your NFT</h1>
-            <MintNFT signer={signer} ipfsUrl={metadataIpfsUrl} />
+            {signer && <MintNFT signer={signer} />}
         </div>
     );
 }
-

@@ -9,21 +9,15 @@ const MintNFT = ({ signer }) => {
     const [metadata, setMetadata] = useState(null);
 
     useEffect(() => {
-        // Fetch the metadata on mount
-        fetch('/api/getMetadata')
+        fetch('/api/getMetadata') // Assuming this endpoint returns all needed metadata
             .then(response => response.json())
-            .then(data => {
-                setMetadata(data);
-            })
-            .catch(error => {
-                console.error('Failed to fetch metadata:', error);
-                alert('Failed to fetch metadata.');
-            });
+            .then(setMetadata)
+            .catch(console.error);
     }, []);
 
     const handleMintNFT = async () => {
         if (!metadata) {
-            alert('Please load metadata before minting.');
+            alert('Metadata not loaded yet');
             return;
         }
 
@@ -41,16 +35,7 @@ const MintNFT = ({ signer }) => {
 
     return (
         <div>
-            {metadata ? (
-                <div>
-                    <p>Name: {metadata.name}</p>
-                    <p>Description: {metadata.description}</p>
-                    <p>Image URL: {metadata.image}</p>
-                    <Button onClick={handleMintNFT}>Mint NFT</Button>
-                </div>
-            ) : (
-                <p>Loading metadata...</p>
-            )}
+            <Button onClick={handleMintNFT}>Mint NFT</Button>
         </div>
     );
 };
