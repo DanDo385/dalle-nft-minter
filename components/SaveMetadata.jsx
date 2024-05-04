@@ -44,7 +44,6 @@ const SaveMetadata = ({ onMetadataSaved }) => {
             <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
             <TextArea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
             <Input type="text" value={imageIpfsUrl} onChange={(e) => setImageIpfsUrl(e.target.value)} placeholder="Image IPFS URL" />
-            <Input type="text" value={metadataIpfsUrl} onChange={(e) => setMetadataIpfsUrl(e.target.value)} placeholder="Metadata IPFS URL" />
             <Button onClick={handleSaveMetadata}>Save Metadata</Button>
         </form>
     );

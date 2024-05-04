@@ -22,7 +22,7 @@ const Navbar = () => {
               <Link href="/images"><span>Images</span></Link>
             </li>
             <li>
-              <Link href="/images"><span>Metadata</span></Link>
+              <Link href="/metadata"><span>Metadata</span></Link>
             </li>
             <li>
               <Link href="/mint"><span>Mint</span></Link>
